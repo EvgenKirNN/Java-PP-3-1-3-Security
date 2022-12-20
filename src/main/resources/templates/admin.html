@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+</head>
+<body>
+<h1>Admin page</h1>
+<p>
+    <a th:href="@{'/admin/add'}">Create new user</a>
+</p>
+<p>
+    <a th:href="@{'/admin/edit?id='+${user.getId()}}">Edit admin data</a>
+</p>
+<p>
+    <a href="/admin/users">Show all users</a>
+</p>
+<form  th:action="@{/logout}">
+    <input type="submit" value="Logout">
+</form>
+</body>
+</html>
