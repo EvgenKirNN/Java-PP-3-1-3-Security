@@ -20,11 +20,6 @@ public class UserController {
         this.roleService = roleService;
     }
 
-    @GetMapping(value = {"/", "/index"})
-    public String showIndex() {
-        return "index";
-    }
-
     @GetMapping(value = "/user")
     public String showUserInfo(Principal principal, ModelMap model) {
         model.addAttribute("user", userService.findByUsername(principal.getName()));
@@ -46,9 +41,7 @@ public class UserController {
 
     @GetMapping(value = "/admin/add")
     public String showUserAdd(ModelMap model) {
-        //User user = new User();
         model.addAttribute("user", new User());
-        //System.out.println("---->>> " + user);
         model.addAttribute("listOfRoles", roleService.roles());
         return "user-add";
     }
@@ -69,13 +62,13 @@ public class UserController {
 
 
     @PostMapping(value = "/admin/edit")
-    public String editUser(@ModelAttribute User user/*, Set<Role> userRoles*/) {
+    public String editUser(@ModelAttribute User user) {
         userService.update(user);
         return "redirect:/admin";
     }
 
     @PostMapping(value = "/admin/add")
-    public String addUser(@ModelAttribute User user/*, Set<Role> userRoles*/) {
+    public String addUser(@ModelAttribute User user) {
         userService.add(user);
         return "redirect:/admin";
     }
