@@ -1,15 +1,19 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
+import java.util.List;
 
-@Controller
+@RestController
 public class UserController {
 
     private final UserService userService;
@@ -20,57 +24,55 @@ public class UserController {
         this.roleService = roleService;
     }
 
-    @GetMapping(value = "/user")
-    public String showUserInfo(Principal principal, ModelMap model) {
-        model.addAttribute("user", userService.findByUsername(principal.getName()));
-        model.addAttribute("listOfRoles", roleService.roles());
-        return "user";
+    @GetMapping(value = {"/login", "/"})
+    public ModelAndView login() {
+        return new ModelAndView("login");
     }
 
-    @GetMapping(value = "/admin")
-    public String showAdminPage(Principal principal, ModelMap model) {
-        model.addAttribute("user", userService.findByUsername(principal.getName()));
-        return "admin";
+    @GetMapping(value = "/index")
+    public ModelAndView getMainPage() {
+        return new ModelAndView("index");
     }
 
-    @GetMapping(value = "/admin/users")
-    public String showListOfUsers(ModelMap model) {
-        model.addAttribute("users", userService.list());
-        return "users";
+    @GetMapping(value = "api/user")
+    public ResponseEntity<User> getUserInfo(Principal principal) {
+        return new ResponseEntity<>(userService.findByUsername(principal.getName()), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/admin/add")
-    public String showUserAdd(ModelMap model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("listOfRoles", roleService.roles());
-        return "user-add";
+    @GetMapping(value = "api/admin/find/{username}")
+    public ResponseEntity<User> userNameInfo(@PathVariable String username) {
+        User user = userService.findByUsername(username);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/admin/edit")
-    public String showUserEdit(@RequestParam(value = "id") long id, ModelMap model) {
-        model.addAttribute("user", userService.get(id));
-        model.addAttribute("listOfRoles", roleService.roles());
-        return "user-edit";
+    @GetMapping(value = "api/admin/{id}")
+    public ResponseEntity<User> userInfo(@PathVariable long id) {
+        User user = userService.get(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/admin/delete")
-    public String deleteUser(@RequestParam(value = "id") long id) {
+    @GetMapping(value = "api/admin")
+    public ResponseEntity<List<User>> listOfUsers() {
+        List<User> userList = userService.list();
+        return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "api/admin/{id}")
+    public ResponseEntity<Long> deleteUser(@PathVariable long id) {
         userService.delete(id);
-        return "redirect:/admin";
+        return new ResponseEntity<>(id, HttpStatus.OK);
     }
 
-
-
-    @PostMapping(value = "/admin/edit")
-    public String editUser(@ModelAttribute User user) {
+    @PutMapping(value = "api/admin")
+    public ResponseEntity<User> editUser(@RequestBody User user) {
         userService.update(user);
-        return "redirect:/admin";
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/admin/add")
-    public String addUser(@ModelAttribute User user) {
+    @PostMapping(value = "api/admin")
+    public ResponseEntity<User> addUser(@RequestBody User user) {
         userService.add(user);
-        return "redirect:/admin";
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
 }

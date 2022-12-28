@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
     public void add(User user) {
         if (userRepository.findByUsername(user.getUsername()).isEmpty()) {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            user.setId(0L);
             userRepository.save(user);
         }
     }

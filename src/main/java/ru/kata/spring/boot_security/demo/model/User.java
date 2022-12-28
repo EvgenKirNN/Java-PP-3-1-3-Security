@@ -22,8 +22,11 @@ public class User implements UserDetails {
     @Column
     private String lastname;
 
+//    @Column
+//    private String email;
+
     @Column
-    private String email;
+    private int age;
 
     @Column
     private String username;
@@ -33,11 +36,10 @@ public class User implements UserDetails {
 
     @ManyToMany
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
-        roles = new HashSet<Role>();
-        id = 0L;
+
     }
 
     @Override
@@ -99,12 +101,20 @@ public class User implements UserDetails {
         this.lastname = lastname;
     }
 
-    public String getEmail() {
-        return email;
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+
+    public int getAge() {
+        return age;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public void setUsername(String username) {
