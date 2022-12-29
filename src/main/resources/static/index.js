@@ -1,40 +1,5 @@
 const urlPref = 'http://localhost:8080/api';
 
-// navbar-info
-const updHeaderInfo = (user) => {
-    let el = `<span class="fw-bolder">${user.username}</span>
-        <span> with roles: </span>
-        <span>
-    `;
-    user.roles.forEach(role => {
-        const roleName = role.name;
-        el += `<span>${roleName.substring(roleName.lastIndexOf('_') + 1)}</span> `;
-    });
-    el += '</span>';
-    document.getElementById('headerInfo').innerHTML = el;
-}
-
-sendRequest('GET', '/user').then(user => updHeaderInfo(user))
-
-const updUserInfoTableRowContent = (user) => {
-    let el = `
-        <td>${user.id}</td>
-        <td>${user.name}</td>
-        <td>${user.lastname}</td>
-        <td>${user.age}</td>
-        <td>${user.username}</td>
-        <td>
-    `;
-    user.roles.forEach(role => {
-        const roleName = role.name;
-        el += `<span>${roleName.substring(roleName.lastIndexOf('_') + 1)}</span> `;
-    });
-    el += '</td>';
-    document.getElementById('userInfoTableRow').innerHTML = el;
-}
-
-sendRequest('GET', '/user').then(user => updUserInfoTableRowContent(user))
-
 if (document.getElementById('v-pills-admin')) {
     const updAllUsersTableContent = (users) => {
         users.forEach(user => tableAddRowContent(user))
@@ -171,13 +136,7 @@ if (document.getElementById('v-pills-admin')) {
         document.getElementById('newRoleUser').selected = true;
         document.getElementById('newRoleAdmin').selected = false;
         sendRequest('POST', '/admin', newUser).then(user => {
-            if (!user.id) {
-                 sendRequest('GET', '/admin/find/' + user.username).then(usr => {
-                     tableAddRowContent(usr);
-                 })
-            } else {
-                tableAddRowContent(user);
-            }
+            if (!user.id) tableAddRowContent(user);
         });
 
         bootstrap.Tab.getInstance(document.querySelector('#nav-tab a[href="#nav-usersTable"]')).show();

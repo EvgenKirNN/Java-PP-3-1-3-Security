@@ -10,7 +10,12 @@
 <body>
 
 <header class="d-flex flex-wrap justify-content-between align-items-stretch text-white py-2 bg-dark">
-    <div class="fs-3 ps-4 me-1 d-inline-block" id="headerInfo">
+    <div class="fs-3 ps-4 me-1 d-inline-block"> <!--id="headerInfo">-->
+        <span class="fw-bolder" th:text="${authUser.username}"></span>
+        <span> with roles: </span>
+        <th:block th:each="role : ${authUser.roles}">
+            <span th:utext="${#strings.substringAfter(role.getAuthority, 'ROLE_')}"></span>
+        </th:block>
         <!--index.js-->
     </div>
     <div>
@@ -176,8 +181,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr id="userInfoTableRow">
-                                </tr>
+                                    <tr>
+                                        <td th:text="${authUser.getId()}"/>
+                                        <td th:text="${authUser.getName()}"/>
+                                        <td th:text="${authUser.getLastname()}"/>
+                                        <td th:text="${authUser.age}"/>
+                                        <td th:text="${authUser.username}"/>
+                                        <td>
+                                            <th:block th:each="role : ${authUser.roles}">
+                                            <span th:utext="${#strings.substringAfter(role.getAuthority, 'ROLE_')}"></span>
+                                            </th:block>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
